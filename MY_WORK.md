@@ -32,11 +32,11 @@
 
 | Field | Your Answer |
 |-------|-------------|
-| **Full Name** | [Write your full name here] |
-| **Student ID** | [Write your student ID here] |
-| **University Email** | [yourid]@std.psau.edu.sa |
-| **GitHub Username** | [your-github-username] |
-| **Repository Link** | [Paste your repository link here] |
+| **Full Name** | [layan salem] |
+| **Student ID** | [446052671] |
+| **University Email** | 446052671@std.psau.edu.sa |
+| **GitHub Username** | [LayanSalem] |
+| **Repository Link** | https://github.com/LayanSalem/OS-Assignment3-layan-salem.git |
  
 ---
 
@@ -132,68 +132,89 @@
 
 ## Your Development Log
 
-### Entry 1 - [Date and Time]
-**What I did**:
+### Entry 1 - [November 12, 2026, 7:15 PM]
+**What I did**:Read the assignment PDF, the README.md, MY_WORK.md and the whole SchedulerSimulationSync.java, then set up my repository
 
-**Details**:
+**Details**:Forked makopt/OS-Assignment3-Starter-481, renamed my fork to OS-Assignment3-layan-salem and checked that it is public
+Cloned it in VS Code and read every class: SharedStats, ReadyQueue, Process, CpuWorker, RaceWindow and the verification block in main
+Found the TODO Feature 1/2/3 comments that show where I have to work
+Changed the student ID on line 304 to 446052671
+Committed and pushed: Set my student ID: 446052671
 
-**Challenges**:
+**Challenges**:At first I did not understand why RaceWindow.pause() is placed between a read and a write, and why I am not allowed to remove it
 
-**Solution**:
+**Solution**:Re-read the comment above the RaceWindow class and the README: it simulates the OS preempting a thread at the worst moment, so that the race condition appears every time instead of rarely
 
-**Time spent**:
-
----
-
-### Entry 2 - [Date and Time]
-**What I did**:
-
-**Details**:
-
-**Challenges**:
-
-**Solution**:
-
-**Time spent**:
+**Time spent**:30 minutes
 
 ---
 
-### Entry 3 - [Date and Time]
-**What I did**:
+### Entry 2 - [November 12, 2026, 7:30 PM]
+**What I did**:Ran the original (broken) starter and saved its output for Question 1
 
-**Details**:
+**Details**:My parameters: 10 processes, time quantum 2000 ms, 2 CPUs, student ID 446052671
+The run crashed immediately: both CPU-1 and CPU-2 threw java.lang.NullPointerException inside ReadyQueue.snapshot() (line 151)
+The verification block showed observed 0 for context switches, completed processes and total service time, and every process had 0 waiting and 0 turnaround time
+Saved the whole output in a text file (outside the repository)
 
-**Challenges**:
+**Challenges**:The ▶ Run button in VS Code did not work, so I could not run the program from the IDE
+In the terminal the symbols (═, ✔, ▶) were printed as ?, and the numbers were printed with Arabic digits because of my Windows language settings
+I did not understand why every value was 0 and why the watchdog did not fire
 
-**Solution**:
+**Solution**:Compiled and ran from the VS Code terminal with javac SchedulerSimulationSync.java and java SchedulerSimulationSync
+Fixed the symbols with chcp 65001 and the UTF-8 options (-Dfile.encoding=UTF-8 -Dstdout.encoding=UTF-8); the digits are only a display setting (-Duser.language=en)
+Understood that both CPU threads died from the exception before running any quantum, so no counter was ever incremented, and the watchdog did not fire because the CPU threads were already dead (not stuck)
 
-**Time spent**:
-
----
-
-### Entry 4 - [Date and Time]
-**What I did**:
-
-**Details**:
-
-**Challenges**:
-
-**Solution**:
-
-**Time spent**:
+**Time spent**:45 minutes
 
 ---
 
-### Entry 5 - [Date and Time]
-**What I did**:
+### Entry 3 - [November 12, 2026, 8:15 PM]
+**What I did**:Feature 1 - lock on the ready queu
 
-**Details**:
+**Details**:Added a ReentrantLock queueLock in ReadyQueue
+Put lock() / try / finally { unlock() } in add(), poll(), processOf() and snapshot()
+The exceptions were gone, but some counters were still wrong
+Committed: Feature 1: Protected the ready queue with a ReentrantLock
 
-**Challenges**:
+**Challenges**:I was not sure if the lock is released when poll() returns from inside the try
 
-**Solution**:
 
-**Time spent**:
+
+**Solution**:I learned that finally always runs, even after return
+
+**Time spent**:45 minutes
+
+---
+
+### Entry 4 - [:November 12, 2026, 10:00 PM]
+**What I did**::November 12, 2026, 10:00 PM
+
+**Details**:Feature 2: one lock for each counter, used in the update methods and the getters. Committed it
+Feature 3: added Semaphore readyCount = new Semaphore(0), release() in add() and acquire() in the CPU loop, and removed the busy waiting code
+Added the shutdown: the CPU that finishes the last process calls release(totalCPUs)
+Ran it 5 times and got 23, 10, 35406 and 0 with all ✔. Committed it
+
+**Challenges**:: After the last process finished, the other CPU stayed blocked in acquire() and never stopped
+
+**Solution**:Drew the two CPUs on paper and understood that the last CPU has to wake the others with release(totalCPUs)
+
+**Time spent**:1 hour 30 minutes
+
+---
+
+### Entry 5 - [November 13, 2026,5am]
+**What I did**:Wrote MY_WORK.md
+
+**Details**:Filled in my information, the log, the reflection and the technical answers
+Pasted my starter and final verification blocks in Question 1
+Committed: Docs: Completed development log, reflection and technical answers
+
+**Challenges**:Question 4 about the bounded buffer, because my queue is not bounded
+
+**Solution**:Went back to the Chapter 5 slides (mutex, empty, full)
+
+**Time spent**:30 minutes
 
 ---
 
@@ -240,7 +261,7 @@
 
 **Your Answer:** *(5-7 sentences)*
 
-[Write your answer here.]
+[I learned that count = count + 1 is not one step, it is a read and then a write, and another thread can come in between. This is a race condition, and the code that uses shared data is a critical section. I protected these parts with a ReentrantLock and always put unlock() in finally so the lock is never stuck. I also learned that a counting semaphore counts the processes in the queue and makes the CPU sleep with acquire() instead of checking the queue again and again. What surprised me was my starter run: both CPUs crashed with a NullPointerException in snapshot() and all the counters stayed at 0.]
 
 ## Question 2: What was the most challenging part of this assignment?
 
@@ -248,7 +269,7 @@
 
 **Your Answer:** *(5-7 sentences)*
 
-[Write your answer here.]
+[The hardest part was the shutdown in Feature 3. After the last process finished, the other CPU was blocked in acquire() and nobody would add a process again. So the program just hangs with no error message, and the watchdog stops it. I also had to make sure the CPU that wakes up does not call poll() on an empty queue. It took me time to picture what both CPUs are doing at the same moment.]
 
 ## Question 3: How did you overcome the challenges you faced?
 
@@ -256,7 +277,7 @@
 
 **Your Answer:** *(5-7 sentences)*
 
-[Write your answer here.]
+[I read the README and the whole code first, and ran the starter to see the problem with my own ID. I went back to the Chapter 5 slides about locks and semaphores when something was not clear. I did the features one by one and ran the program after each one to see which lines became ✔. For the shutdown I drew the two CPUs on paper to see who is blocked and who must call release(totalCPUs). At the end I ran the program 5 times and all runs were ✔..]
 
 ## Question 4: Where can synchronization concepts be applied in real-world applications?
 
@@ -264,7 +285,7 @@
 
 **Your Answer:** *(5-7 sentences)*
 
-[Write your answer here.]
+[In a bank, two withdrawals from the same account at the same time can lose one update, like my addServiceTime() without a lock. In seat booking, two people can take the same seat, like two CPUs taking the same process in poll(). A likes or visitors counter on a website is the same as my contextSwitchCount. A print queue is producer-consumer: users add jobs and the printer takes them, and it should sleep on a semaphore when there is nothing to print. Databases also use locks on rows and tables to protect shared data..]
 
 ### Optional: What would you like to learn more about?
 
@@ -298,20 +319,45 @@
 
 **Your Answer:** *(3-5 sentences)*
 
-[Write your answer here.]
+[In my starter run (10 processes, quantum 2000 ms, 2 CPUs) three values were wrong: context switches 0 instead of 23, completed processes 0 instead of 10, and total service time 0 instead of 35406. Both CPUs crashed with a NullPointerException in snapshot() before running any process, so nothing was counted, and the watchdog did not show because the CPU threads were already dead. The reason is a race on the queue: one CPU was looping over the list in snapshot() while the other CPU removed the head in poll() without a lock. On a real machine this can happen without RaceWindow because the OS can stop a thread at any moment between a read and a write. It is hard to find because it happens only sometimes, so the program can look correct in many runs.]
 
 Verification block of the **original starter**:
 ```
-[Paste the verification block (or the exception/watchdog message) of the starter here]
+[Exception in thread "CPU-2" Exception in thread "CPU-1" java.lang.NullPointerException: Cannot read field "next" because "this.next" is null
+        at java.base/java.util.LinkedList$ListItr.next(LinkedList.java:905)
+        at ReadyQueue.snapshot(SchedulerSimulationSync.java:151)
+        at CpuWorker.run(SchedulerSimulationSync.java:280)
+java.lang.NullPointerException: Cannot read field "next" because "this.next" is null
+        at java.base/java.util.LinkedList$ListItr.next(LinkedList.java:905)
+        at ReadyQueue.snapshot(SchedulerSimulationSync.java:151)
+        at CpuWorker.run(SchedulerSimulationSync.java:280)
+
+═══ VERIFICATION (expected values are computed from YOUR seed) ═══
+  Context switches (quanta executed)     expected 23       observed 0        ✘ MISMATCH
+  Completed processes                    expected 10       observed 0        ✘ MISMATCH
+  Total service time (ms)                expected 35406    observed 0        ✘ MISMATCH
+  Busy-waiting polls (must be 0)         expected 0        observed 0        ✔
+  ✘ At least one check failed (see the ✘ lines above): a race condition or busy waiting is still present.]
 ```
 
 Verification block of **my final version**:
 ```
-[Paste the verification block of your final version here (all lines ✔)]
+[═══ VERIFICATION (expected values are computed from YOUR seed) ═══
+  Context switches (quanta executed)     expected 23       observed 23       ✔
+  Completed processes                    expected 10       observed 10       ✔
+  Total service time (ms)                expected 35406    observed 35406    ✔
+  Busy-waiting polls (must be 0)         expected 0        observed 0        ✔
+  ✔ All shared values are consistent.]
 ```
 
 **Explanation of the timeline:**
-[Explain the lost update step by step.]
+[Example with contextSwitchCount = 12 and no lock:
+
+CPU-1's thread reads 12
+RaceWindow.pause()
+CPU-2's thread also reads 12
+CPU-1's thread writes 13
+CPU-2's thread writes 13.]
 
 ## Question 2: Critical Sections and Lock Granularity
 
@@ -321,9 +367,15 @@ Verification block of **my final version**:
 
 **Your Answer:** *(3-5 sentences)*
 
-[Write your answer here.]
+[I used one queueLock for the ready queue (add, poll, processOf, snapshot) and one lock for each counter: contextSwitchLock, completedLock and serviceTimeLock, in the update method and the getter. I chose one lock per variable because the three counters are independent, so updating one should not wait for another; the downside is more locks, and if I ever need two of them together I must take them in the same order to avoid deadlock. The queue has its own lock because it is a different resource, and I don't want a CPU to wait for a counter update. Mutual exclusion is guaranteed because every access is between lock() and unlock(), and unlock() in finally means the lock is always released, so other threads can always enter (progress). A default ReentrantLock is not fair, so it does not promise the order of waiting threads (bounded waiting), but my critical sections are very short so no thread waits long.]
 
-| Critical section (variable / method) | Lock used | Why it needs protection |
+| Critical section (variable / method) | ReadyQueue.add()	queueLock	Two CPUs can add at the same time
+ReadyQueue.poll()	queueLock	Two CPUs can take the same process
+ReadyQueue.processOf()	queueLock	Reading the map while another CPU writes it
+ReadyQueue.snapshot()	queueLock	This caused my NullPointerException
+contextSwitchCount (increment + getter)	contextSwitchLock	Lost increments
+completedProcessCount (increment + getter)	completedLock	If it is wrong, the CPUs never stop
+totalServiceTime (add + getter)	serviceTimeLock	Lost additions
 |---|---|---|
 | [e.g., `ReadyQueue.poll()`] | [lock name] | [reason] |
 | [...] | [...] | [...] |
@@ -336,7 +388,7 @@ Verification block of **my final version**:
 
 **Your Answer:** *(3-5 sentences)*
 
-[Write your answer here.]
+[In the starter, when the queue is empty the CPU sleeps 20 ms and checks again in a loop, which wastes CPU time. In my starter run Busy-waiting polls was 0 only because both CPUs crashed at the start while the queue was still full, so they never saw an empty queue. My semaphore readyCount is the number of processes waiting in the queue; it starts at 0 because the queue is empty, and after the 10 first add() calls it is 10. Now an idle CPU is blocked in acquire() and uses no CPU, so my final run shows 0 polls. The CPU that finishes the last process calls release(totalCPUs) to wake the other CPU so it can stop; without it the CPU waits forever and the watchdog stops the program.]
 
 ## Question 4: Classical Problems and Deadlock
 
@@ -345,26 +397,29 @@ Verification block of **my final version**:
 > 💡 **TIP:** Recall the bounded-buffer solution of the slides (`empty`, `full`, `mutex`) and the order of `wait()` calls in the producer and the consumer. For the deadlock, think about a producer that holds the mutex while waiting for a free slot that only a consumer (who needs the mutex) can create.
 
 **Your Answer:** *(3-5 sentences)*
+This is the producer-consumer (bounded-buffer) problem. For a bounded queue I would use mutex = 1, empty = K and full = 0. If a thread takes the mutex first and then waits for a free slot, it can block forever while holding the mutex. I would prevent it by always waiting on the semaphore first and taking the mutex after.
 
 **Classical problem and roles**:
-[Name the problem; who is the producer, who is the consumer?]
+[Producer-consumer. The producers are main (adds the 10 processes) and the CPUs when they put an unfinished process back with add(). The consumers are the CPUs when they acquire() and take a process with poll(). So each CPU is both a producer and a consumer.]
 
 **Semaphores for a bounded queue (name and initial value)**:
-[Name the three semaphores and their initial values.]
+[mutex = 1: only one thread uses the queue at a time
+empty = K: free places in the queue
+full = 0: processes in the queue (like my readyCount)]
 
 **Deadlock scenario and prevention**:
-[Describe the scenario and the necessary condition you would break.]
+[The queue is full. CPU-1 takes mutex and then waits on empty. CPU-2 wants to remove a process to free a place, but it waits for mutex, which CPU-1 holds. Each one waits for the other forever. I would break hold and wait by doing wait(empty) before wait(mutex), which is what my code does (I never call acquire() while holding queueLock). If two locks were needed, I would break circular wait by always taking them in the same order.]
 
 ## Summary
 
 **Key concepts I understood through these questions:**
-1.
-2.
-3.
+1.A race condition happens when threads read and write shared data at the same time
+2.A lock with unlock() in finally gives mutual exclusion
+3.A semaphore lets a thread sleep instead of busy waiting
 
 **Concepts I need to study more:**
-1.
-2.
+1.Deadlock avoidance (Banker's algorithm)
+2.Other classical problems (readers-writers, dining philosophers)
 
 ---
 
