@@ -42,7 +42,7 @@
 
 ## 🎥 Video Link
 
-**Video Link**: [Paste your video link here]
+**Video Link**: [ https://drive.google.com/file/d/13r1B8sZj7duB8LuPOiooLYQhGxSyROAz/view?usp=drivesdk ]
 
 > ⚠️ **WARNING:** The video must be **publicly accessible** ("Anyone with the link can view") on **Google Drive**, **YouTube (Unlisted or Public)** or any other cloud file-sharing system. A private, restricted or broken link counts as a **missing video (-1 mark)**.
 >
@@ -188,7 +188,7 @@ Committed: Feature 1: Protected the ready queue with a ReentrantLock
 ---
 
 ### Entry 4 - [:November 12, 2026, 10:00 PM]
-**What I did**::November 12, 2026, 10:00 PM
+**What I did**:Feature 2 (statistics locks) and Feature 3 (semaphore)
 
 **Details**:Feature 2: one lock for each counter, used in the update methods and the getters. Committed it
 Feature 3: added Semaphore readyCount = new Semaphore(0), release() in add() and acquire() in the CPU loop, and removed the busy waiting code
@@ -235,13 +235,13 @@ Committed: Docs: Completed development log, reflection and technical answers
 
 > 💡 **TIP:** Fill this in **last**, after all entries are written.
 
-**Total time spent on assignment**: [X hours]
+**Total time spent on assignment**: [about 6 hours]
 
-**Most challenging part**:
+**Most challenging part**:The shutdown in Feature 3, because the program just hangs without any error.
 
-**Most interesting learning**:
+**Most interesting learning**:count = count + 1 is a read and a write, and a 1 ms pause between them is enough to lose updates or crash the program.
 
-**What I would do differently next time**:
+**What I would do differently next time**:Start earlier and fix the Run button before starting the code.
 
 ---
 
@@ -354,10 +354,12 @@ Verification block of **my final version**:
 [Example with contextSwitchCount = 12 and no lock:
 
 CPU-1's thread reads 12
-RaceWindow.pause()
+RaceWindow.pause() right
 CPU-2's thread also reads 12
 CPU-1's thread writes 13
 CPU-2's thread writes 13.]
+
+Two quanta started but the counter only went up by one, so one update is lost. With contextSwitchLock, CPU-2 waits until CPU-1 writes 13, then it reads 13 and writes 14.
 
 ## Question 2: Critical Sections and Lock Granularity
 
